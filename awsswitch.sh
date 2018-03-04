@@ -36,13 +36,13 @@ function aws_use {
         KEY=$(grep -A 2 -E "^\[${NAME}\]$" "${HOME}/.aws/credentials" 2> /dev/null | tail -n 2 | head -n 1 | cut -f 2 -d '=')
         SECRET=$(grep -A 2 -E "^\[${NAME}\]$" "${HOME}/.aws/credentials" 2> /dev/null | tail -n 1 | cut -f 2 -d '=')
     else
-        ARN_OF_MFA=$(aws --profile ${NAME} iam --output text list-mfa-devices|awk '{ print $3 }')
-        CREDENTIALS="$( aws --profile ${NAME} sts get-session-token \
-        --duration $DURATION  \
-        --serial-number $ARN_OF_MFA \
-        --token-code $MFA_TOKEN_CODE \
+        ARN_OF_MFA=$(aws --profile "${NAME}" iam --output text list-mfa-devices|awk '{ print $3 }')
+        CREDENTIALS="$( aws --profile "${NAME}" sts get-session-token \
+        --duration "$DURATION"  \
+        --serial-number "$ARN_OF_MFA" \
+        --token-code "$MFA_TOKEN_CODE" \
         --output text  | awk '{ print $2, $4, $5 }')"
-        read KEY SECRET TOKEN <<< "$CREDENTIALS"
+        read -r KEY SECRET TOKEN <<< "$CREDENTIALS"
     fi
     if [ -z "$REGION" ] || \
            [ -z "$KEY" ] || \
